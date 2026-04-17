@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Biblioteca</title>
+    <link rel="stylesheet" href="/frontend/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Sistema de Gerenciamento de Biblioteca</h1>
+
+        <div id="message"></div>
+
+        <div class="card">
+            <h2 id="formTitle">Cadastrar Novo Livro</h2>
+
+            <form id="livroForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Autor *</label>
+                        <input type="text" id="autor" required placeholder="Digite o nome do autor">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Título *</label>
+                        <input type="text" id="titulo" required placeholder="Digite o título do livro">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ano *</label>
+                        <input type="number" id="ano" required placeholder="Ano de publicação">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Editora *</label>
+                        <input type="text" id="editora" required placeholder="Nome da editora">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Localização *</label>
+                        <input type="text" id="localizacao" required placeholder="Ex: A1-S2">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Edição *</label>
+                        <input type="text" id="edicao" required placeholder="Ex: 1ª, 2ª ed.">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">Salvar Livro</button>
+                    <button type="button" class="btn-secondary" onclick="limparFormulario()">Limpar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Buscar Livros</h2>
+
+            <div class="busca-section">
+                <input type="text" id="buscaAutor" class="busca-input" placeholder="Buscar por autor...">
+                <button class="btn-primary" onclick="buscarPorAutor()">Buscar Autor</button>
+
+                <input type="text" id="buscaTitulo" class="busca-input" placeholder="Buscar por título...">
+                <button class="btn-primary" onclick="buscarPorTitulo()">Buscar Título</button>
+
+                <button class="btn-secondary" onclick="carregarLivros()">Mostrar Todos</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Lista de Livros</h2>
+
+            <div class="table-container">
+                <table id="tabelaLivros">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Autor</th>
+                            <th>Título</th>
+                            <th>Ano</th>
+                            <th>Editora</th>
+                            <th>Localização</th>
+                            <th>Edição</th>
+                            <th>Data Cadastro</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="listaLivros">
+                        <tr>
+                            <td colspan="9" style="text-align: center;">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="stats" class="stats"></div>
+        </div>
+    </div>
+
+    <script src="/frontend/script.js"></script>
+</body>
+</html>
