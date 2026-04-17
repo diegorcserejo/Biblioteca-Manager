@@ -4,7 +4,8 @@ let livroEditandoId = null;
 
 function mostrarMensagem(msg, tipo) {
     const div = document.getElementById('message');
-    div.innerHTML = `<div class="alert alert-${tipo}">${msg}</div>`;
+    const icon = tipo === 'success' ? '✅' : '❌';
+    div.innerHTML = `<div class="alert alert-${tipo}">${icon} ${msg}</div>`;
 
     setTimeout(() => {
         div.innerHTML = '';
@@ -21,19 +22,19 @@ async function carregarLivros() {
         const stats = document.getElementById('stats');
 
         if (livros.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Nenhum livro cadastrado</td></tr>';
-            stats.innerHTML = 'Total de livros: 0';
+            tbody.innerHTML = '<tr><td colspan="9" class="loading-cell">📭 Nenhum livro cadastrado</td></tr>';
+            stats.innerHTML = 'Total: 0 livros';
             return;
         }
 
         tbody.innerHTML = livros.map((livro) => `
             <tr>
-                <td>${livro.id}</td>
-                <td><strong>${escapeHtml(livro.autor)}</strong></td>
-                <td>${escapeHtml(livro.titulo)}</td>
+                <td><strong>#${livro.id}</strong></td>
+                <td>${escapeHtml(livro.autor)}</td>
+                <td><strong>${escapeHtml(livro.titulo)}</strong></td>
                 <td>${livro.ano}</td>
                 <td>${escapeHtml(livro.editora)}</td>
-                <td>${escapeHtml(livro.localizacao)}</td>
+                <td><span class="location-badge">📍 ${escapeHtml(livro.localizacao)}</span></td>
                 <td>${escapeHtml(livro.edicao)}</td>
                 <td>${formatarData(livro.created_at)}</td>
                 <td>
@@ -43,7 +44,7 @@ async function carregarLivros() {
             </tr>
         `).join('');
 
-        stats.innerHTML = ` Total de livros: ${livros.length}`;
+        stats.innerHTML = `📊 Total: ${livros.length} ${livros.length === 1 ? 'livro' : 'livros'}`;
     } catch (error) {
         mostrarMensagem('Erro ao carregar livros: ' + error.message, 'error');
     }
@@ -57,9 +58,12 @@ function escapeHtml(text) {
 
 function formatarData(data) {
     if (!data) return '-';
-
     const date = new Date(data);
-    return date.toLocaleDateString('pt-BR');
+    return date.toLocaleDateString('pt-BR', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric' 
+    });
 }
 
 async function criarLivro(livro) {
@@ -105,7 +109,7 @@ async function atualizarLivro(id, livro) {
 }
 
 async function deletarLivro(id) {
-    if (!confirm('Tem certeza que deseja excluir este livro?')) return;
+    if (!confirm('⚠️ Tem certeza que deseja excluir este livro?')) return;
 
     try {
         const response = await fetch(`${API_URL}/livros/${id}`, {
@@ -139,14 +143,14 @@ async function editarLivro(id) {
         livroEditandoId = id;
         document.getElementById('formTitle').innerHTML = `✏️ Editando Livro (ID: ${id})`;
 
-        document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+        document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
         mostrarMensagem('Erro ao carregar dados do livro', 'error');
     }
 }
 
 async function buscarPorAutor() {
-    const autor = document.getElementById('buscaAutor').value;
+    const autor = document.getElementById('buscaAutor').value.trim();
 
     if (!autor) {
         mostrarMensagem('Digite um nome de autor para buscar', 'error');
@@ -160,16 +164,16 @@ async function buscarPorAutor() {
         const tbody = document.getElementById('listaLivros');
 
         if (livros.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Nenhum livro encontrado para este autor</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="loading-cell">🔍 Nenhum livro encontrado para este autor</td></tr>';
         } else {
             tbody.innerHTML = livros.map((livro) => `
                 <tr>
-                    <td>${livro.id}</td>
-                    <td><strong>${escapeHtml(livro.autor)}</strong></td>
-                    <td>${escapeHtml(livro.titulo)}</td>
+                    <td><strong>#${livro.id}</strong></td>
+                    <td>${escapeHtml(livro.autor)}</td>
+                    <td><strong>${escapeHtml(livro.titulo)}</strong></td>
                     <td>${livro.ano}</td>
                     <td>${escapeHtml(livro.editora)}</td>
-                    <td>${escapeHtml(livro.localizacao)}</td>
+                    <td>📍 ${escapeHtml(livro.localizacao)}</td>
                     <td>${escapeHtml(livro.edicao)}</td>
                     <td>${formatarData(livro.created_at)}</td>
                     <td>
@@ -185,7 +189,7 @@ async function buscarPorAutor() {
 }
 
 async function buscarPorTitulo() {
-    const titulo = document.getElementById('buscaTitulo').value;
+    const titulo = document.getElementById('buscaTitulo').value.trim();
 
     if (!titulo) {
         mostrarMensagem('Digite um título para buscar', 'error');
@@ -199,16 +203,16 @@ async function buscarPorTitulo() {
         const tbody = document.getElementById('listaLivros');
 
         if (livros.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Nenhum livro encontrado com este título</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="loading-cell">🔍 Nenhum livro encontrado com este título</td></tr>';
         } else {
             tbody.innerHTML = livros.map((livro) => `
                 <tr>
-                    <td>${livro.id}</td>
-                    <td><strong>${escapeHtml(livro.autor)}</strong></td>
-                    <td>${escapeHtml(livro.titulo)}</td>
+                    <td><strong>#${livro.id}</strong></td>
+                    <td>${escapeHtml(livro.autor)}</td>
+                    <td><strong>${escapeHtml(livro.titulo)}</strong></td>
                     <td>${livro.ano}</td>
                     <td>${escapeHtml(livro.editora)}</td>
-                    <td>${escapeHtml(livro.localizacao)}</td>
+                    <td>📍 ${escapeHtml(livro.localizacao)}</td>
                     <td>${escapeHtml(livro.edicao)}</td>
                     <td>${formatarData(livro.created_at)}</td>
                     <td>
@@ -242,12 +246,12 @@ document.getElementById('livroForm').addEventListener('submit', (e) => {
     };
 
     if (!livro.autor || !livro.titulo || !livro.ano || !livro.editora || !livro.localizacao || !livro.edicao) {
-        mostrarMensagem('❌ Por favor, preencha todos os campos!', 'error');
+        mostrarMensagem('Por favor, preencha todos os campos!', 'error');
         return;
     }
 
     if (livro.ano < 0 || livro.ano > new Date().getFullYear()) {
-        mostrarMensagem('❌ Ano inválido!', 'error');
+        mostrarMensagem('Ano inválido!', 'error');
         return;
     }
 
@@ -259,5 +263,4 @@ document.getElementById('livroForm').addEventListener('submit', (e) => {
 });
 
 carregarLivros();
-
 setInterval(carregarLivros, 30000);
